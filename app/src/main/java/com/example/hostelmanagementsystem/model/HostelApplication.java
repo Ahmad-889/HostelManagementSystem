@@ -9,7 +9,7 @@ public class HostelApplication {
     private String studentId;            // FK → Student
     private String requestedRoomId;      // FK → Room
 
-    private Date submissionDate;
+    private Long submissionDate;
     private ApplicationStatus status;
 
     private int semester;
@@ -18,7 +18,7 @@ public class HostelApplication {
     private String emergencyContact;
 
     private String rejectionReason;
-    private Date approvalDate;
+    private Long approvalDate;
 
     // 🔹 REQUIRED for Firebase
     public HostelApplication() {
@@ -35,7 +35,7 @@ public class HostelApplication {
         this.requestedRoomId = roomId;
 
         this.status = ApplicationStatus.PENDING;
-        this.submissionDate = new Date();
+        this.submissionDate = System.currentTimeMillis();
 
         this.rejectionReason = null;
         this.approvalDate = null;
@@ -55,8 +55,18 @@ public class HostelApplication {
     public String getRequestedRoomId() { return requestedRoomId; }
     public void setRequestedRoomId(String requestedRoomId) { this.requestedRoomId = requestedRoomId; }
 
-    public Date getSubmissionDate() { return submissionDate; }
-    public void setSubmissionDate(Date submissionDate) { this.submissionDate = submissionDate; }
+    // For Firebase - returns Long
+    public Long getSubmissionDate() {
+        return submissionDate;
+    }
+    public void setSubmissionDate(Long submissionDate) {
+        this.submissionDate = submissionDate;
+    }
+
+    // Helper method for getting Date object (not used by Firebase)
+    public Date getSubmissionDateAsDate() {
+        return submissionDate != null ? new Date(submissionDate) : null;
+    }
 
     public ApplicationStatus getStatus() { return status; }
     public void setStatus(ApplicationStatus status) { this.status = status; }
@@ -76,8 +86,18 @@ public class HostelApplication {
     public String getRejectionReason() { return rejectionReason; }
     public void setRejectionReason(String rejectionReason) { this.rejectionReason = rejectionReason; }
 
-    public Date getApprovalDate() { return approvalDate; }
-    public void setApprovalDate(Date approvalDate) { this.approvalDate = approvalDate; }
+    // For Firebase - returns Long
+    public Long getApprovalDate() {
+        return approvalDate;
+    }
+    public void setApprovalDate(Long approvalDate) {
+        this.approvalDate = approvalDate;
+    }
+
+    // Helper method for getting Date object (not used by Firebase)
+    public Date getApprovalDateAsDate() {
+        return approvalDate != null ? new Date(approvalDate) : null;
+    }
 
     // =====================
     // Domain Logic (UML)
@@ -90,7 +110,7 @@ public class HostelApplication {
     public void updateStatus(ApplicationStatus status) {
         this.status = status;
         if (status == ApplicationStatus.APPROVED) {
-            this.approvalDate = new Date();
+            this.approvalDate = System.currentTimeMillis();
         }
     }
 

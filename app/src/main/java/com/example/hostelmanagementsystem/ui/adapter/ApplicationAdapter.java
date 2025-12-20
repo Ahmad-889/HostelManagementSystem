@@ -28,11 +28,12 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
     private List<HostelApplication> applicationList;
     private HMSController controller;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-
-    public ApplicationAdapter(Context context, List<HostelApplication> applicationList, HMSController controller) {
+    private OnApplicationActionListener listener;
+    public ApplicationAdapter(Context context, List<HostelApplication> applicationList, HMSController controller, OnApplicationActionListener listener) {
         this.context = context;
         this.applicationList = applicationList;
         this.controller = controller;
+        this.listener = listener;
     }
 
     @NonNull
@@ -81,8 +82,11 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
         holder.tvParentContact.setText("Parent: " + app.getParentContact());
         holder.tvEmergencyContact.setText("Emergency: " + app.getEmergencyContact());
 
-        if (app.getSubmissionDate() != null) {
-            holder.tvSubmissionDate.setText("Date: " + dateFormat.format(app.getSubmissionDate()));
+        // Use the helper method to get Date
+        if (app.getSubmissionDateAsDate() != null) {
+            holder.tvSubmissionDate.setText("Date: " + dateFormat.format(app.getSubmissionDateAsDate()));
+        } else {
+            holder.tvSubmissionDate.setText("Date: N/A");
         }
 
         // Status handling
@@ -138,9 +142,11 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
                 .setPositiveButton("Approve", (dialog, which) -> {
                     controller.approveApplication(context, app, success -> {
                         if (success) {
-                            app.setStatus(ApplicationStatus.APPROVED);
-                            notifyItemChanged(position);
                             Toast.makeText(context, "Application approved successfully", Toast.LENGTH_SHORT).show();
+
+                            if (listener != null) {
+                                listener.onApplicationUpdated();
+                            }
                         } else {
                             Toast.makeText(context, "Failed to approve application", Toast.LENGTH_SHORT).show();
                         }
@@ -178,10 +184,11 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
 
             controller.rejectApplication(context, app, reason, success -> {
                 if (success) {
-                    app.setStatus(ApplicationStatus.REJECTED);
-                    app.setRejectionReason(reason);
-                    notifyItemChanged(position);
                     Toast.makeText(context, "Application rejected", Toast.LENGTH_SHORT).show();
+
+                    if (listener != null) {
+                        listener.onApplicationUpdated();
+                    }
                 } else {
                     Toast.makeText(context, "Failed to reject application", Toast.LENGTH_SHORT).show();
                 }
@@ -215,4 +222,9 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
             btnReject = itemView.findViewById(R.id.btnReject);
         }
     }
+
+    public interface OnApplicationActionListener {
+        void onApplicationUpdated();
+    }
+
 }

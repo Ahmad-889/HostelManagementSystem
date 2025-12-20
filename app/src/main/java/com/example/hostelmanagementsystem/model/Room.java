@@ -93,12 +93,12 @@ public class Room {
         this.roomType = roomType;
     }
 
-    public boolean available() {
+    public boolean isAvailable() {
         return available;
     }
 
-    public void setAvailable(boolean isAvailable) {
-        available = isAvailable;
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 
     public double getHostelRent() {
@@ -131,7 +131,7 @@ public class Room {
 
     // Allocate a student (increment occupancy)
     public boolean allocateStudent() {
-        if (checkAvailability()) {
+        if (currentOccupancy < capacity) {
             currentOccupancy++;
             available = currentOccupancy < capacity;
             return true;

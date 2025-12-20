@@ -61,14 +61,6 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/tvStudentId"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="ID: ST001"
-                    android:textSize="14sp"
-                    android:textColor="#666666"/>
-
-                <TextView
                     android:id="@+id/tvSemester"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -83,6 +75,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="CGPA: 3.5"
+                    android:textSize="14sp"
+                    android:textColor="#666666"/>
+
+                <TextView
+                    android:id="@+id/tvStudentId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ID: ST001"
                     android:textSize="14sp"
                     android:textColor="#666666"/>
             </LinearLayout>
@@ -147,7 +147,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="12dp"
-            android:gravity="end"
+            android:gravity="center"
             android:visibility="visible">
 
             <Button

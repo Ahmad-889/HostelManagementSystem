@@ -32,8 +32,10 @@ public class StudentLoginActivity extends AppCompatActivity {
         TextView adminLogin = findViewById(R.id.tvAdminLogin);
 
         login.setOnClickListener(v -> {
+            String regNumber = regNo.getText().toString().trim();
+
             controller.login(
-                    regNo.getText().toString(),
+                    regNumber,
                     password.getText().toString(),
                     UserRole.STUDENT,
                     success -> {
@@ -43,6 +45,7 @@ public class StudentLoginActivity extends AppCompatActivity {
                                     StudentLoginActivity.this,
                                     StudentDashboardActivity.class
                             );
+                            intent.putExtra("studentId", regNumber);
                             startActivity(intent);
                             finish();
                         } else {

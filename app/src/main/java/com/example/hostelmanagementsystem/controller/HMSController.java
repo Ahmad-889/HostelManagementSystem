@@ -1,10 +1,12 @@
 package com.example.hostelmanagementsystem.controller;
 
+
 import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.hostelmanagementsystem.callbacks.CountCallback;
 import com.example.hostelmanagementsystem.data.FakeDatabase;
 import com.example.hostelmanagementsystem.model.Room;
 import com.google.firebase.database.*;
@@ -23,6 +25,7 @@ import java.util.List;
 
 public class HMSController {
 
+    private FirebaseManager firebaseManager = new FirebaseManager();
     public void login(
             String username,
             String password,
@@ -134,25 +137,54 @@ public class HMSController {
 
     // View pending applications
     public void viewPendingApplications(ApplicationListCallback callback) {
-        DatabaseReference ref = FirebaseManager.getRootRef().child("applications");
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<HostelApplication> apps = new ArrayList<>();
-                for (DataSnapshot child : snapshot.getChildren()) {
-                    HostelApplication app = child.getValue(HostelApplication.class);
-                    if (app != null) {
-                        apps.add(app);
-                    }
-                }
-                callback.onResult(apps);
-            }
+        FirebaseManager.getRootRef()
+                .child("applications")
+                .orderByChild("status")
+                .equalTo(ApplicationStatus.PENDING.name())
+                .addValueEventListener(new ValueEventListener() {
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                callback.onResult(new ArrayList<>());
-            }
-        });
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        List<HostelApplication> apps = new ArrayList<>();
+                        for (DataSnapshot child : snapshot.getChildren()) {
+                            HostelApplication app = child.getValue(HostelApplication.class);
+                            if (app != null) {
+                                apps.add(app);
+                            }
+                        }
+                        callback.onResult(apps);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        callback.onResult(new ArrayList<>());
+                    }
+                });
+    }
+
+    // View all applications
+    public void viewAllApplications(ApplicationListCallback callback) {
+        FirebaseManager.getRootRef()
+                .child("applications")
+                .addValueEventListener(new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        List<HostelApplication> apps = new ArrayList<>();
+                        for (DataSnapshot child : snapshot.getChildren()) {
+                            HostelApplication app = child.getValue(HostelApplication.class);
+                            if (app != null) {
+                                apps.add(app);
+                            }
+                        }
+                        callback.onResult(apps);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        callback.onResult(new ArrayList<>());
+                    }
+                });
     }
 
     public void approveApplication(Context context, HostelApplication app, OperationCallback callback) {
@@ -210,7 +242,60 @@ public class HMSController {
                 .addOnFailureListener(e -> callback.onComplete(false));
     }
 
+    public void submitApplication(
+            String studentId,
+            Room room,
+            int semester,
+            float cgpa,
+            String parentContact,
+            String emergencyContact,
+            OperationCallback callback
+    ) {
+        // Add validation
+        if (studentId == null || studentId.isEmpty()) {
+            Log.e("HMSController", "Cannot submit application: studentId is null or empty");
+            callback.onComplete(false);
+            return;
+        }
 
+        if (room == null || room.getRoomId() == null || room.getRoomId().isEmpty()) {
+            Log.e("HMSController", "Cannot submit application: room or roomId is null or empty");
+            callback.onComplete(false);
+            return;
+        }
+
+        DatabaseReference ref = FirebaseManager.getRootRef().child("applications").push();
+        String applicationId = ref.getKey();
+
+        HostelApplication app = new HostelApplication(
+                applicationId,
+                studentId,
+                room.getRoomId()
+        );
+
+        // Set additional details
+        app.setSemester(semester);
+        app.setCgpa(cgpa);
+        app.setParentContact(parentContact);
+        app.setEmergencyContact(emergencyContact);
+
+        Log.d("HMSController", "Submitting application - StudentID: " + studentId +
+                ", RoomID: " + room.getRoomId() + ", AppID: " + applicationId);
+
+        ref.setValue(app)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("HMSController", "Application submitted successfully");
+                    callback.onComplete(true);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("HMSController", "Failed to submit application: " + e.getMessage());
+                    callback.onComplete(false);
+                });
+    }
+
+    public void getAllApplicationsCount(CountCallback callback) {
+        firebaseManager.getAllApplicationsCount(callback);
+    }
     public void createDefaultAdmin() {
 
         DatabaseReference adminsRef =
@@ -338,58 +423,9 @@ public class HMSController {
                 });
     }
 
-
-    public void submitApplication(
-            String studentId,
-            Room room,
-            int semester,
-            float cgpa,
-            String parentContact,
-            String emergencyContact,
-            OperationCallback callback
-    ) {
-        // Add validation
-        if (studentId == null || studentId.isEmpty()) {
-            Log.e("HMSController", "Cannot submit application: studentId is null or empty");
-            callback.onComplete(false);
-            return;
-        }
-
-        if (room == null || room.getRoomId() == null || room.getRoomId().isEmpty()) {
-            Log.e("HMSController", "Cannot submit application: room or roomId is null or empty");
-            callback.onComplete(false);
-            return;
-        }
-
-        DatabaseReference ref = FirebaseManager.getRootRef().child("applications").push();
-        String applicationId = ref.getKey();
-
-        HostelApplication app = new HostelApplication(
-                applicationId,
-                studentId,
-                room.getRoomId()
-        );
-
-        // Set additional details
-        app.setSemester(semester);
-        app.setCgpa(cgpa);
-        app.setParentContact(parentContact);
-        app.setEmergencyContact(emergencyContact);
-
-        Log.d("HMSController", "Submitting application - StudentID: " + studentId +
-                ", RoomID: " + room.getRoomId() + ", AppID: " + applicationId);
-
-        ref.setValue(app)
-                .addOnSuccessListener(aVoid -> {
-                    Log.d("HMSController", "Application submitted successfully");
-                    callback.onComplete(true);
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("HMSController", "Failed to submit application: " + e.getMessage());
-                    callback.onComplete(false);
-                });
+    public void getAllRoomsCount(CountCallback callback) {
+        firebaseManager.getAllRoomsCount(callback);
     }
-
     public void viewStudentApplications(
             String studentId,
             ApplicationListCallback callback

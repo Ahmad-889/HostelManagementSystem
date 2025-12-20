@@ -2,6 +2,7 @@ package com.example.hostelmanagementsystem.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -20,7 +21,7 @@ import java.util.List;
 
 public class StudentDashboardActivity extends AppCompatActivity {
 
-    private TextView tvWelcome;
+    private TextView tvWelcome, tvNoRooms;
     private RecyclerView rvRooms;
     private RoomAdapter adapter;
     private List<Room> roomList = new ArrayList<>();
@@ -33,6 +34,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_student_dashboard);
 
         tvWelcome = findViewById(R.id.tvWelcomeStudent);
+        tvNoRooms = findViewById(R.id.tvNoRooms);
         rvRooms = findViewById(R.id.rvRooms);
         Button btnMyApplications = findViewById(R.id.btnMyApplications);
 
@@ -70,6 +72,14 @@ public class StudentDashboardActivity extends AppCompatActivity {
             roomList.clear();
             roomList.addAll(rooms);
             adapter.notifyDataSetChanged();
+
+            if (rooms.isEmpty()) {
+                tvNoRooms.setVisibility(View.VISIBLE);
+                rvRooms.setVisibility(View.GONE);
+            } else {
+                tvNoRooms.setVisibility(View.GONE);
+                rvRooms.setVisibility(View.VISIBLE);
+            }
         });
     }
 }

@@ -29,6 +29,7 @@
         <activity android:name=".ui.StudentDashboardActivity" />
         <activity android:name=".ui.ApplyHostelActivity" />
         <activity android:name=".ui.AdminRoomsActivity" />
+        <activity android:name=".ui.AdminApplicationsActivity" />
     </application>
 
 </manifest>

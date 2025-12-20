@@ -68,7 +68,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         );
 
         // ---------- Availability ----------
-        if (room.available()) {
+        if (room.isAvailable()) {
             holder.tvAvailability.setText("Available");
             holder.tvAvailability.setTextColor(
                     context.getResources().getColor(android.R.color.holo_green_dark)
@@ -128,7 +128,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
             holder.btnApply.setVisibility(View.VISIBLE);
 
             // Disable apply if room is full
-//            holder.btnApply.setEnabled(room.available());
+            holder.btnApply.setEnabled(room.isAvailable());
 
             holder.btnApply.setOnClickListener(v -> {
                 SubmitApplicationDialog dialog = new SubmitApplicationDialog(
