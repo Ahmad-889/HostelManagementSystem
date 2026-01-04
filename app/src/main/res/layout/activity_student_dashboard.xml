@@ -8,24 +8,27 @@
     android:padding="24dp"
     android:paddingTop="32dp">
 
-    <!-- Options Menu Toolbar -->
+    <!-- Options Menu Toolbar with HMS Heading -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/studentToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        app:title=""
-        app:layout_collapseMode="pin"/>
+        android:background="?android:attr/colorBackground"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp">
 
-    <!-- HMS Heading -->
-    <TextView
-        android:text="Hostel Management System"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="?attr/colorPrimary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"/>
+        <TextView
+            android:id="@+id/toolbarTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hostel Management System"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="?android:attr/colorAccent"
+            android:layout_gravity="left" />
+
+    </androidx.appcompat.widget.Toolbar>
+
 
     <!-- Welcome + Button -->
     <LinearLayout
