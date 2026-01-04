@@ -32,21 +32,21 @@
         android:id="@+id/etEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="?android:attr/colorAccent"
         android:hint="Email"
         android:inputType="textEmailAddress"
+        android:backgroundTint="?android:attr/colorAccent"
         android:textColor="?android:attr/textColorPrimary"
-        android:textColorHint="?android:attr/textColorHint" />
+        android:textColorHint="?android:attr/textColorHint"/>
 
     <EditText
         android:id="@+id/etPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="?android:attr/colorAccent"
         android:hint="Password"
         android:inputType="textPassword"
+        android:backgroundTint="?android:attr/colorAccent"
         android:textColor="?android:attr/textColorPrimary"
-        android:textColorHint="?android:attr/textColorHint" />
+        android:textColorHint="?android:attr/textColorHint"/>
 
     <Button
         android:id="@+id/btnAdminLogin"

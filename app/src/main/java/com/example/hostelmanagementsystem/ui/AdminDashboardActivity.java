@@ -142,14 +142,9 @@ public class AdminDashboardActivity extends AppCompatActivity
             return true;
         }
 
-        if (id == R.id.menu_edit_profile) {
-//            startActivity(
-//                    new Intent(this, EditProfileActivity.class)
-//                            .putExtra("studentId", loggedInStudentId)
-//            );
-//            return true;
-
-            Toast.makeText(this, "Edit profile clicked", Toast.LENGTH_SHORT).show();
+        if (id == R.id.menu_portfolio) {
+            Intent intent = new Intent(this, PortfolioActivity.class);
+            startActivity(intent);
             return true;
         }
 
