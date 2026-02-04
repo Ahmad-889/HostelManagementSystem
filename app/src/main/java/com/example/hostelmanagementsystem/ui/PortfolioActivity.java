@@ -76,6 +76,7 @@ public class PortfolioActivity extends AppCompatActivity {
 
     private void loadPortfolio() {
         webView.loadUrl(PORTFOLIO_URL);
+        webView.setWebViewClient(new WebViewClient());
     }
 
     // Custom WebViewClient to handle page loading states
@@ -111,14 +112,14 @@ public class PortfolioActivity extends AppCompatActivity {
     }
 
     // Handle back button to go back in WebView history
-    @Override
-    public void onBackPressed() {
-        if (webView.canGoBack()) {
-            webView.goBack();
-        } else {
-            super.onBackPressed();
-        }
-    }
+//    @Override
+//    public void onBackPressed() {
+//        if (webView.canGoBack()) {
+//            webView.goBack();
+//        } else {
+//            super.onBackPressed();
+//        }
+//    }
 
     // Handle toolbar back button
     @Override
